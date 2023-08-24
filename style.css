@@ -1,0 +1,224 @@
+@font-face {
+  font-family: handy;
+  src: url(handy.ttf);
+}
+
+@font-face {
+  font-family: micro;
+  src: url(micro.ttf);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: hidden;
+
+  background-color: #181825;
+
+  font-family: "handy", sans-serif;
+}
+
+.canvas {
+  margin: 0;
+  padding: 0;
+
+  position: absolute;
+
+  width: 400px;
+  height: 400px;
+
+  top: 50%;
+  transform: translateY(-50%);
+
+  background-color: #11111b;
+
+  z-index: 200;
+}
+
+.block {
+  position: absolute;
+
+  width: 20px;
+  height: 20px;
+
+  background-color: #a6e3a1;
+
+  z-index: 50;
+}
+
+.food {
+  position: absolute;
+
+  width: 20px;
+  height: 20px;
+
+  background-color: #fab387;
+
+  z-index: 51;
+}
+
+.score {
+  position: absolute;
+
+  width: 100vw;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  color: #181825;
+
+  padding: 0;
+  margin: 0;
+
+  text-align: center;
+
+  font-size: 64px;
+
+  z-index: 20;
+}
+
+.paused {
+  margin: 0;
+  padding: 0;
+
+  position: absolute;
+
+  width: 400px;
+  height: 400px;
+
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #11111b;
+
+  padding: 0;
+  margin: 0;
+
+  text-align: center;
+
+  display: none;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 64px;
+
+  z-index: 500;
+
+  font-family: "micro", sans-serif;
+  color: #585b70;
+  line-height: 60px;
+}
+
+.paused.active {
+  display: flex;
+}
+
+.gameover {
+  margin: 0;
+  padding: 0;
+
+  position: absolute;
+
+  width: 400px;
+  height: 400px;
+
+  top: 50%;
+  transform: translateY(-50%);
+
+  color: #181825;
+  background-color: #11111b;
+
+  padding: 0;
+  margin: 0;
+
+  text-align: center;
+
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 64px;
+
+  z-index: 500;
+}
+
+.gameover.active {
+  display: flex;
+}
+
+.gameover-title {
+  font-family: "micro", sans-serif;
+
+  padding: 0;
+  margin: 0;
+
+  font-size: 72px;
+  color: #585b70;
+  line-height: 60px;
+}
+
+.gameover-score {
+  padding: 0;
+  margin: 0;
+  height: 64px;
+
+  font-size: 32px;
+  color: #585b70;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.gameover-score path {
+  fill: #585b70;
+}
+
+.gameover-button {
+  padding: 0;
+  margin: 0;
+  margin-top: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 140px;
+  height: 32px;
+
+  background-color: #585b70;
+  color: #11111b;
+  outline: 0;
+  border: none;
+
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+
+  font-family: "micro", sans-serif;
+  font-size: 20px;
+}
+
+.gameover-button:hover {
+  background-color: #6c7086;
+}
+
+.gameover-button path {
+  fill: #11111b;
+}
+
+.credits {
+  position: absolute;
+  bottom: 0;
+
+  color: #585b70;
+}
