@@ -1,3 +1,6 @@
+import LevelManager from "./LevelManager.js";
+import PerksManager from "./PerksManager.js";
+
 const snake = {
   score: 0,
   body: [
@@ -7,6 +10,14 @@ const snake = {
     }
   ]
 };
+
+const DIMENSIONS = 20;
+const DELTA_TIME = 100;
+
+var gameisover = false;
+var choosingperk = false;
+var pause = false;
+var timer = Date.now();
 
 var oldSnake = {
   score: 0,
@@ -26,11 +37,11 @@ var direction = {
 var bounds = {
   x: {
     min: 0,
-    max: Math.floor(document.querySelector(".canvas").clientWidth / 20)
+    max: Math.floor(document.querySelector(".canvas").clientWidth / DIMENSIONS)
   },
   y: {
     min: 0,
-    max: Math.floor(document.querySelector(".canvas").clientWidth / 20)
+    max: Math.floor(document.querySelector(".canvas").clientWidth / DIMENSIONS)
   }
 };
 
@@ -41,6 +52,19 @@ var food = {
   x: Math.floor(Math.random() * (bounds.x.max - bounds.x.min) + bounds.x.min),
   y: Math.floor(Math.random() * (bounds.y.max - bounds.y.min) + bounds.y.min)
 };
+
+var perksManager = new PerksManager();
+
+var levelManager = new LevelManager();
+levelManager.onReachNewLevel = (level) => {
+  pause = true;
+  choosingperk = true;
+  perksManager.display(() => {
+    pause = false;
+    choosingperk = false;
+  });
+};
+levelManager.update(0);
 
 const canvas = document.querySelector(".canvas");
 
@@ -103,49 +127,83 @@ function OnTakeFood() {
   });
 
   snake.score++;
+
+  levelManager.update(snake.score);
 }
 
 function UpdateVisualsInterpolated(interpolation) {
-  const score = canvas.querySelector(".score");
+  const score = document.querySelector(".score");
   score.innerHTML = FormatNumber(Lerp(oldSnake.score * 100, snake.score * 100, interpolation));
 
   const _food = canvas.querySelector(".food");
-  _food.style.top = `${food.y * 20}px`;
-  _food.style.left = `${food.x * 20}px`;
+  _food.style.top = `${food.y * DIMENSIONS}px`;
+  _food.style.left = `${food.x * DIMENSIONS}px`;
+  _food.style.width = `${DIMENSIONS}px`;
+  _food.style.height = `${DIMENSIONS}px`;
 
   const blocks = canvas.querySelectorAll(".block");
+  const blockTemp = canvas.querySelector(".block-temp");
+  blockTemp.style.width = `${DIMENSIONS}px`;
+  blockTemp.style.height = `${DIMENSIONS}px`;
+
+  if (interpolation == 1) blockTemp.classList.remove("active");
 
   if (blocks.length < snake.body.length) {
     const lastSegment = snake.body[snake.body.length - 1];
-    canvas.innerHTML += `<div style="top:${lastSegment.y * 20}px; left:${lastSegment.x * 20}px" class="block"></div>\n`;
+    canvas.innerHTML += `<div style="width: ${DIMENSIONS}px; height: ${DIMENSIONS}px; top:${lastSegment.y * DIMENSIONS}px; left:${lastSegment.x * DIMENSIONS}px" class="block"></div>\n`;
   }
 
+  blocks[0].style.width = `${DIMENSIONS}px`;
+  blocks[0].style.height = `${DIMENSIONS}px`;
+
+  var sideScrolled = false;
   for (var i = 0; i < oldSnake.body.length; i++) {
-    if (Math.abs(oldSnake.body[i].x - snake.body[i].x) > 1.1 || Math.abs(oldSnake.body[i].y - snake.body[i].y) > 1.1) {
-      blocks[i].style.top = `${snake.body[i].y * 20}px`;
-      blocks[i].style.left = `${snake.body[i].x * 20}px`;
+    if (Math.abs(oldSnake.body[i].x - snake.body[i].x) > 1.1) {
+      var targetPos = oldSnake.body[i].x - Math.sign(snake.body[i].x - oldSnake.body[i].x);
+      var startPos = snake.body[i].x + Math.sign(snake.body[i].x - oldSnake.body[i].x);
+
+      blocks[i].style.top = `${snake.body[i].y * DIMENSIONS}px`;
+      blocks[i].style.left = `${Lerp(oldSnake.body[i].x * DIMENSIONS, targetPos * DIMENSIONS, interpolation)}px`;
+
+      blockTemp.style.top = `${snake.body[i].y * DIMENSIONS}px`;
+      blockTemp.style.left = `${Lerp(startPos * DIMENSIONS, snake.body[i].x * DIMENSIONS, interpolation)}px`;
+      blockTemp.classList.add("active");
+
+      sideScrolled = true;
+    } else if (Math.abs(oldSnake.body[i].y - snake.body[i].y) > 1.1) {
+      var targetPos = oldSnake.body[i].y - Math.sign(snake.body[i].y - oldSnake.body[i].y);
+      var startPos = snake.body[i].y + Math.sign(snake.body[i].y - oldSnake.body[i].y);
+
+      blocks[i].style.top = `${Lerp(oldSnake.body[i].y * DIMENSIONS, targetPos * DIMENSIONS, interpolation)}px`;
+      blocks[i].style.left = `${snake.body[i].x * DIMENSIONS}px`;
+
+      blockTemp.style.top = `${Lerp(startPos * DIMENSIONS, snake.body[i].y * DIMENSIONS, interpolation)}px`;
+      blockTemp.style.left = `${snake.body[i].x * DIMENSIONS}px`;
+      blockTemp.classList.add("active");
+
+      sideScrolled = true;
     } else {
-      blocks[i].style.top = `${Lerp(oldSnake.body[i].y * 20, snake.body[i].y * 20, interpolation)}px`;
-      blocks[i].style.left = `${Lerp(oldSnake.body[i].x * 20, snake.body[i].x * 20, interpolation)}px`;
+      blocks[i].style.top = `${Lerp(oldSnake.body[i].y * DIMENSIONS, snake.body[i].y * DIMENSIONS, interpolation)}px`;
+      blocks[i].style.left = `${Lerp(oldSnake.body[i].x * DIMENSIONS, snake.body[i].x * DIMENSIONS, interpolation)}px`;
     }
+
+    if (!sideScrolled) blockTemp.classList.remove("active");
   }
 }
 
 function FormatNumber(num) {
-  if (num >= 1000000000) {
+  /*if (num >= 1000000000) {
     return (num / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
   }
   if (num >= 1000000) {
     return (num / 1000).toFixed(1).replace(/\.0$/, "") + "K";
-  }
-  return num.toString();
+  }*/
+  return num.toString().padStart(8, "0");
 }
 
 function Lerp(start, end, percentage) {
   return start + (end - start) * percentage;
 }
-
-var gameisover = false;
 
 function OnLose() {
   pause = true;
@@ -153,7 +211,7 @@ function OnLose() {
   const gameover = document.querySelector(".gameover");
   gameover.classList.add("active");
 
-  gameover.querySelector(".gameover-score").innerHTML = `${FormatNumber(snake.score)} <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M21.947 9.179a1.001 1.001 0 0 0-.868-.676l-5.701-.453-2.467-5.461a.998.998 0 0 0-1.822-.001L8.622 8.05l-5.701.453a1 1 0 0 0-.619 1.713l4.213 4.107-1.49 6.452a1 1 0 0 0 1.53 1.057L12 18.202l5.445 3.63a1.001 1.001 0 0 0 1.517-1.106l-1.829-6.4 4.536-4.082c.297-.268.406-.686.278-1.065z"></path></svg>`;
+  gameover.querySelector(".gameover-score").innerHTML = `${snake.score * 100} <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M21.947 9.179a1.001 1.001 0 0 0-.868-.676l-5.701-.453-2.467-5.461a.998.998 0 0 0-1.822-.001L8.622 8.05l-5.701.453a1 1 0 0 0-.619 1.713l4.213 4.107-1.49 6.452a1 1 0 0 0 1.53 1.057L12 18.202l5.445 3.63a1.001 1.001 0 0 0 1.517-1.106l-1.829-6.4 4.536-4.082c.297-.268.406-.686.278-1.065z"></path></svg>`;
   gameover.querySelector(".gameover-button").addEventListener("click", () => {
     gameisover = false;
 
@@ -185,11 +243,22 @@ function OnLose() {
     canvas.innerHTML += `<div class="block"></div>`;
 
     pause = false;
+
+    perksManager = new PerksManager();
+    levelManager = new LevelManager();
+    levelManager.onReachNewLevel = () => {
+      pause = true;
+      choosingperk = true;
+      perksManager.display(() => {
+        pause = false;
+        choosingperk = false;
+      });
+    };
+    levelManager.update(0);
+
     gameover.classList.remove("active");
   });
 }
-
-var pause = false;
 
 function TogglePause() {
   pause = !pause;
@@ -201,7 +270,7 @@ function TogglePause() {
 document.addEventListener(
   "keydown",
   (event) => {
-    if (gameisover) return;
+    if (gameisover || choosingperk) return;
 
     var name = event.key;
 
@@ -228,11 +297,9 @@ document.addEventListener(
   false
 );
 
-var timer = Date.now();
-
 function update() {
-  if (Date.now() - timer < 100) {
-    UpdateVisualsInterpolated((Date.now() - timer) / 100);
+  if (Date.now() - timer < DELTA_TIME) {
+    UpdateVisualsInterpolated((Date.now() - timer) / DELTA_TIME);
     requestAnimationFrame(update);
     return;
   }

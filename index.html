@@ -5,25 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" href="style.css" />
+
+    <script type="module" src="LevelManager.js"></script>
     <script type="module" src="main.js"></script>
 
     <title>Snake?</title>
   </head>
   <body>
     <div class="canvas">
-      <h2 class="score">0</h2>
-      <div class="food"></div>
+      <div class="food">
+        <h3 class="food-value">100</h3>
+      </div>
+      <div class="block-temp"></div>
       <div class="block"></div>
     </div>
-    <h2 class="paused">Paused</h2>
+    <div class="hider-canvas"></div>
+    <div class="border-canvas"></div>
+
+    <h2 class="score">50</h2>
+
+    <h2 class="level">lvl 2</h2>
+
+    <div class="slider">
+      <div class="slider-value"></div>
+    </div>
+
+    <h2 class="paused">PAUSED</h2>
+
     <section class="gameover">
       <h2 class="gameover-score">
         1000 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M21.947 9.179a1.001 1.001 0 0 0-.868-.676l-5.701-.453-2.467-5.461a.998.998 0 0 0-1.822-.001L8.622 8.05l-5.701.453a1 1 0 0 0-.619 1.713l4.213 4.107-1.49 6.452a1 1 0 0 0 1.53 1.057L12 18.202l5.445 3.63a1.001 1.001 0 0 0 1.517-1.106l-1.829-6.4 4.536-4.082c.297-.268.406-.686.278-1.065z"></path></svg>
       </h2>
-      <h2 class="gameover-title">GAME<br />OVER</h2>
+      <h2 class="gameover-title">GAME OVER</h2>
       <button class="gameover-button">RETRY</button>
     </section>
 
-    <h3 class="credits">Created by Charbel Assaker</h3>
+    <section class="perks">
+      <h2 class="perks-instructions">LEVEL UP!<br />Choose one perk to continue</h2>
+      <div class="perks-container">
+        <button class="perk selected perk-left">
+          <h3 class="perk-title">High burn</h3>
+          <h4 class="perk-description">You grow once every time you eat 2 apples.</h4>
+        </button>
+        <button class="perk perk-right">
+          <h3 class="perk-title">Trim</h3>
+          <h4 class="perk-description">Cut your body in half.</h4>
+        </button>
+      </div>
+      <button class="perks-button">Choose</button>
+    </section>
+
+    <h3 class="credits">Perks are not functional yet. Created by <a target="_blank" href="https://charbelassaker.onrender.com">Charbel Assaker</a></h3>
   </body>
 </html>
