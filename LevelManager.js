@@ -5,7 +5,6 @@ export default class LevelManager {
     this.level = 0;
     this.levelDiv = document.querySelector(".level");
     this.levelDiv.innerHTML = `lvl ${this.level}`;
-    this.lastLevelScore = 0;
   }
 
   update(score) {
@@ -17,7 +16,7 @@ export default class LevelManager {
 
     if (this.level != 0) slider.style.width = `${(100 * (score - start)) / (end - start)}%`;
     else {
-      slider.style.width = "0";
+      slider.style.width = "0px";
     }
 
     if (currLevel != this.level) {
@@ -25,6 +24,12 @@ export default class LevelManager {
       if (this.level != 0 && this.level != 1) this.onReachNewLevel(this.level);
       this.levelDiv.innerHTML = `lvl ${this.level}`;
     }
+  }
+
+  reset() {
+    this.level = 0;
+    this.update(0);
+    this.levelDiv.innerHTML = `lvl ${this.level}`;
   }
 
   getLevelFromScore(score) {
@@ -46,13 +51,13 @@ export default class LevelManager {
   getStartScoreOfLevel(level) {
     if (level <= 0) return 0;
 
-    return Math.floor(level * 2.5) + this.getStartScoreOfLevel(level - 1);
+    return /*Math.floor(level * 2.5)*/ -1 / (0.001 * level + 0.02) + 50 + this.getStartScoreOfLevel(level - 1);
   }
 
   getStartScoreOfLevelKnowingLast(level, lastLevelStartScore) {
     if (level <= 0) return 0;
 
-    return Math.floor(level * 2.5) + lastLevelStartScore;
+    return /*Math.floor(level * 2.5)*/ -1 / (0.001 * level + 0.02) + 50 + lastLevelStartScore;
   }
 
   getEndScoreOfLevel(level) {

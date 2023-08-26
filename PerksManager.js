@@ -3,18 +3,18 @@ export default class PerksManager {
     {
       name: "High burn",
       description: "You grow once every time you eat 2 foods.",
-      id: "2foods",
+      id: "multifoods",
       onApply: () => {},
       used: 0,
-      canBeUsed: Number.POSITIVE_INFINITY
+      canBeUsed: Infinity
     },
     {
       name: "Trim",
-      description: "Remove half your body.",
+      description: "Remove 25% of your body. Minimum is 1 segment removed.",
       id: "half",
       onApply: () => {},
       used: 0,
-      canBeUsed: Number.POSITIVE_INFINITY
+      canBeUsed: Infinity
     },
     {
       name: "Moreee",
@@ -22,15 +22,15 @@ export default class PerksManager {
       id: "+food",
       onApply: () => {},
       used: 0,
-      canBeUsed: Number.POSITIVE_INFINITY
+      canBeUsed: Infinity
     },
     {
       name: "Fast food",
-      description: "Food value quadruples but gets removed automatically if not eaten after 5 seconds.",
+      description: "Food value doubles but gets removed automatically if not eaten after 8 seconds.",
       id: "fastfood",
       onApply: () => {},
       used: 0,
-      canBeUsed: Number.POSITIVE_INFINITY
+      canBeUsed: Infinity
     },
     {
       name: "Fast snake",
@@ -38,7 +38,7 @@ export default class PerksManager {
       id: "fastsnake",
       onApply: () => {},
       used: 0,
-      canBeUsed: Number.POSITIVE_INFINITY
+      canBeUsed: 4
     },
     {
       name: "More space",
@@ -46,7 +46,7 @@ export default class PerksManager {
       id: "+space",
       onApply: () => {},
       used: 0,
-      canBeUsed: 3
+      canBeUsed: 5
     }
   ];
 
@@ -135,5 +135,11 @@ export default class PerksManager {
     };
 
     this.perksContainer.classList.add("active");
+  }
+
+  reset() {
+    this.perks.forEach((perk) => {
+      perk.used = 0;
+    });
   }
 }
