@@ -248,6 +248,7 @@ function UpdateVisualsInterpolated(interpolation) {
     _foods[i].style.height = `${DIMENSIONS}px`;
 
     _foods[i].querySelector("h3").innerHTML = foodValue * 100;
+    _foods[i].querySelector("h3").style.fontSize = `${Math.round(DIMENSIONS * 0.5)}px`;
   }
 
   const blocks = canvas.querySelectorAll(".block");
@@ -288,7 +289,6 @@ function UpdateVisualsInterpolated(interpolation) {
   var sideScrolled = false;
   for (var i = 0; i < oldSnake.body.length; i++) {
     var blockTemp = blockTemps[i];
-    console.log(i);
     if (Math.abs(oldSnake.body[i].x - snake.body[i].x) > 1.1) {
       var targetPos = oldSnake.body[i].x - Math.sign(snake.body[i].x - oldSnake.body[i].x);
       var startPos = snake.body[i].x + Math.sign(snake.body[i].x - oldSnake.body[i].x);
@@ -442,6 +442,7 @@ document.addEventListener(
     if (gameisover || choosingperk) return;
 
     var name = event.key;
+    console.log(name);
 
     if (name == "p" || name == "P") {
       TogglePause();
@@ -449,16 +450,16 @@ document.addEventListener(
 
     if (pause) return;
 
-    if ((name == "w" || name == "W") && (snake.body.length <= 1 || (snake.body[1].y - snake.body[0].y != -1 && direction.y != 1))) {
+    if ((name == "w" || name == "W" || name == "ArrowUp") && (snake.body.length <= 1 || (snake.body[1].y - snake.body[0].y != -1 && direction.y != 1))) {
       direction.x = 0;
       direction.y = -1;
-    } else if ((name == "a" || name == "A") && (snake.body.length <= 1 || (snake.body[1].x - snake.body[0].x != -1 && direction.x != 1))) {
+    } else if ((name == "a" || name == "A" || name == "ArrowLeft") && (snake.body.length <= 1 || (snake.body[1].x - snake.body[0].x != -1 && direction.x != 1))) {
       direction.x = -1;
       direction.y = 0;
-    } else if ((name == "d" || name == "D") && (snake.body.length <= 1 || (snake.body[1].x - snake.body[0].x != 1 && direction.x != -1))) {
+    } else if ((name == "d" || name == "D" || name == "ArrowRight") && (snake.body.length <= 1 || (snake.body[1].x - snake.body[0].x != 1 && direction.x != -1))) {
       direction.x = 1;
       direction.y = 0;
-    } else if ((name == "s" || name == "S") && (snake.body.length <= 1 || (snake.body[1].y - snake.body[0].y != 1 && direction.y != -1))) {
+    } else if ((name == "s" || name == "S" || name == "ArrowDown") && (snake.body.length <= 1 || (snake.body[1].y - snake.body[0].y != 1 && direction.y != -1))) {
       direction.x = 0;
       direction.y = 1;
     }
